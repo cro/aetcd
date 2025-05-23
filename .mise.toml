@@ -1,0 +1,10 @@
+# This a template for .rtx.toml for python
+# In many cases we also symlink .venv in the current directory to
+# the .pyenv version because tools can pick up the correct env more easily
+[env]
+PYTHON_KEYRING_BACKEND = 'keyring.backends.null.Keyring'
+PYTHONPATH = '{{config_root}}:{{config_root}}/aetcd'
+[tools]
+python = '3.12.10'
+[settings]
+python.uv_venv_auto = true

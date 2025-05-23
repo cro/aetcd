@@ -1,6 +1,10 @@
 *.egg
 *.egg-info
-.*
+.coverage
+.python-version
+.ropeproject
+.venv
+.vscode
 __pycache__
 build
 coverage.xml
