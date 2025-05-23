@@ -27,7 +27,7 @@ $(VENV)/bin/activate:
 	$(PYTHON) -m pip install 'pifpaf @ git+https://github.com/jd/pifpaf.git@80cc13bd7e4b0cb286d15659c9fe7958e8600cd9#egg=aetcd'
 
 build: bootstrap
-	$(PYTHON) setup.py sdist bdist_wheel
+	uv build
 
 genproto: bootstrap
 	$(PYTHON) -m grpc_tools.protoc -Iproto \

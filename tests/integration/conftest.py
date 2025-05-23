@@ -42,6 +42,33 @@ def etcdctl():
     return _etcdctl
 
 
+@pytest.fixture(scope='session')
+@pytest.mark.asyncio
+def etcdutl():
+    async def _etcdutl(*args, ignore_result=False):
+        endpoint = os.environ.get('TEST_ETCD_HTTP_URL')
+        if endpoint:
+            args = ['--endpoints', endpoint] + list(args)
+        args = ['etcdutl', '-w', 'json'] + list(args)
+
+        proc = await asyncio.create_subprocess_exec(
+            *args,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+
+        stdout, stderr = await proc.communicate()
+
+        if proc.returncode != 0:
+            raise Exception(f'Error during awaiting process with args {args!r}: {stderr}')
+
+        if ignore_result:
+            return None
+
+        return json.loads(stdout.decode('utf-8'))
+    return _etcdutl
+
+
 @pytest.fixture
 async def client(etcdctl):
     host = 'localhost'

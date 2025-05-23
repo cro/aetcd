@@ -1,0 +1,30 @@
+[project]
+name = "aetcd"
+version = "1.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "grpcio>=1.71.0",
+]
+
+[dependency-groups]
+dev = [
+    "debugpy>=1.8.14",
+    "grpcio-tools>=1.71.0",
+    "pudb>=2025.1",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "pytest-cov>=6.1.1",
+    "pytest-mock>=3.14.0",
+    "sphinx>=8.2.3",
+    "sphinx-rtd-theme>=3.0.2",
+    "pifpaf>=3.3.0"
+]
+
+[tool.pytest.ini_options]
+addopts = "--cov=aetcd --asyncio-mode=auto tests"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

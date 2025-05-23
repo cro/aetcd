@@ -77,9 +77,9 @@ async def test_hash(etcd):
 
 
 @pytest.mark.asyncio
-async def test_snapshot(etcdctl, etcd):
+async def test_snapshot(etcdutl, etcd):
     with tempfile.NamedTemporaryFile() as f:
         await etcd.snapshot(f)
         f.flush()
 
-        await etcdctl('snapshot', 'status', f.name)
+        await etcdutl('snapshot', 'status', f.name)
