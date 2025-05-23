@@ -19,10 +19,10 @@ default:
 test:
   stage: test
   script:
-    - dnf install -y 'dnf-command(config-manager)' && dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-10-x86_64/pgdg-redhat-repo-latest.noarch.rpm && dnf -y config-manager  --set-enabled pgdg-rhel10-extras && dnf -y update && dnf -y install etcd make python
+    - dnf install -y 'dnf-command(config-manager)' && dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-10-x86_64/pgdg-redhat-repo-latest.noarch.rpm && dnf -y config-manager  --set-enabled pgdg-rhel10-extras && dnf -y update && dnf -y install etcd make python python3-pip
     - etcd &
-    - pip install uv
-    - uv sync
+    - python -m venv .venv && .venv/bin/python -m pip install uv
+    - .venv/bin/uv sync
     - make test
 
 build:
