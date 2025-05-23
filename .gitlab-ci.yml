@@ -14,12 +14,12 @@ cache:
     - .venv/
 
 default:
-  image: python:3.12
+  image: python:3.12-slim-bookworm
 
 test:
   stage: test
   script:
-    - apt -y update && apt -y install etcd
+    - apt -y update && apt -y install etcd-server
     - etcd
     - pip install uv
     - uv sync
