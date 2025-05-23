@@ -19,7 +19,8 @@ dev = [
     "pytest-mock>=3.14.0",
     "sphinx>=8.2.3",
     "sphinx-rtd-theme>=3.0.2",
-    "pifpaf>=3.3.0"
+    "pifpaf>=3.3.0",
+    "twine>=6.1.0"
 ]
 
 [tool.pytest.ini_options]
