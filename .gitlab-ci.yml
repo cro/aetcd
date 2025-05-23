@@ -19,7 +19,7 @@ default:
 test:
   stage: test
   script:
-    - apt -y update && apt -y install etcd-server
+    - apt -y update && apt -y install etcd-server make
     - etcd &
     - pip install uv
     - uv sync
