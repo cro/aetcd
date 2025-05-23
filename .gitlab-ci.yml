@@ -14,12 +14,12 @@ cache:
     - .venv/
 
 default:
-  image: python:3.12-slim-bookworm
+  image: almalinux:10-kitten
 
 test:
   stage: test
   script:
-    - apt -y update && apt -y install etcd-server make
+    - dnf install -y 'dnf-command(config-manager)' && dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-10-x86_64/pgdg-redhat-repo-latest.noarch.rpm && dnf -y config-manager  --set-enabled pgdg-rhel10-extras && dnf -y update && dnf -y install etcd make python
     - etcd &
     - pip install uv
     - uv sync
