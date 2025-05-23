@@ -20,7 +20,7 @@ test:
   stage: test
   script:
     - apt -y update && apt -y install etcd-server
-    - etcd
+    - etcd &
     - pip install uv
     - uv sync
     - make test
