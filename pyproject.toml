@@ -25,6 +25,7 @@ dev = [
 
 [tool.pytest.ini_options]
 addopts = "--cov=aetcd --asyncio-mode=auto tests"
+asyncio_default_fixture_loop_scope="function"
 
 [build-system]
 requires = ["hatchling"]

@@ -166,10 +166,10 @@ class Client:
                 'if using authentication credentials both username and password '
                 'must be provided')
 
-        client_cert_params = (self._cert_cert, self._cert_key)
-        if any(client_cert_params) and None in client_cert_params:
-            raise Exception(
-                'if use client certificates  both cert_key and cert_key must be provided')
+        # client_cert_params = (self._cert_cert, self._cert_key)
+        # if any(client_cert_params) and None in client_cert_params:
+        #     raise Exception(
+        #         'if use client certificates  both cert_key and cert_key must be provided')
 
         if self._ssl is None:
             if any((ca_cert, cert_key, cert_cert)):
@@ -225,7 +225,11 @@ class Client:
                         cert_cert = cert_cert_fd.read()
                 else:
                     cert_cert = None
-                credentials = rpc.ssl_channel_credentials(
+                if "grpc.ssl_target_name_override" in self._options:
+                    credentials = rpc.ssl_channel_credentials(
+                    root_certificates=ca_cert)
+                else:
+                    credentials = rpc.ssl_channel_credentials(
                     root_certificates=ca_cert,
                     private_key=cert_key,
                     certificate_chain=cert_cert,

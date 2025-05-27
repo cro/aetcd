@@ -22,6 +22,8 @@ def etcdctl():
         endpoint = os.environ.get('TEST_ETCD_HTTP_URL')
         if endpoint:
             args = ['--endpoints', endpoint] + list(args)
+        if endpoint.startswith("https"):
+            args.append("--insecure-skip-tls-verify")
         args = ['etcdctl', '-w', 'json'] + list(args)
 
         proc = await asyncio.create_subprocess_exec(
@@ -70,6 +72,55 @@ def etcdutl():
 
 
 @pytest.fixture
+async def client_ssl(etcdctl):
+    host = 'localhost'
+    port = 2379
+
+    endpoint = os.environ.get('TEST_ETCD_HTTP_URL')
+    if endpoint:
+        url = urllib.parse.urlparse(endpoint)
+        host = url.hostname
+        port = url.port
+
+    @contextlib.asynccontextmanager
+    async def _client(
+        host=host,
+        port=port,
+        username=None,
+        password=None,
+        ssl=True,
+        timeout=None,
+        options=None,
+        ca_cert=None,
+        client_cert=None,
+        client_key=None
+    ):
+        async with aetcd.Client(
+            host=host,
+            port=port,
+            username=username,
+            password=password,
+            timeout=timeout,
+            ca_cert=ca_cert,
+            client_cert=None,
+            client_key=None,
+            ssl=True,
+            options={
+                'keepalive_time_ms': 6000,
+                'keepalive_permit_without_calls': True,
+                'http2_max_pings_without_data': 0,
+            },
+        ) as client:
+            yield client
+
+        await etcdctl('del', '--prefix', '')
+        result = await etcdctl('get', '--prefix', '')
+        assert 'kvs' not in result
+
+    return _client
+
+
+@pytest.fixture
 async def client(etcdctl):
     host = 'localhost'
     port = 2379
@@ -108,6 +159,12 @@ async def client(etcdctl):
         assert 'kvs' not in result
 
     return _client
+
+
+@pytest.fixture
+async def etcd_ssl(client_ssl):
+    async with client_ssl() as etcd:
+        yield etcd
 
 
 @pytest.fixture
