@@ -21,16 +21,28 @@ help:
 
 bootstrap: $(VENV)/bin/activate
 $(VENV)/bin/activate:
-	$(PYTHON_BIN) -m venv $(VENV)
-	$(PYTHON) -m pip install pip==23.0 setuptools==67.3.2 wheel==0.38.4
-	$(PYTHON) -m pip install -e .[dev,doc,test]
-	$(PYTHON) -m pip install 'pifpaf @ git+https://github.com/jd/pifpaf.git@80cc13bd7e4b0cb286d15659c9fe7958e8600cd9#egg=aetcd'
+#	rm -rf $(VENV)
+#	uv venv .venv
+	uv sync
+	# $(PYTHON_BIN) -m venv $(VENV)
+	# $(PYTHON) -m pip install pip==23.0 setuptools==67.3.2 wheel==0.38.4
+	# $(PYTHON) -m pip install -e .[dev,doc,test]
+	# $(PYTHON) -m pip install 'pifpaf @ git+https://github.com/jd/pifpaf.git@80cc13bd7e4b0cb286d15659c9fe7958e8600cd9#egg=aetcd'
 
 build: bootstrap
 	uv build
 
+genproto_only:
+	uv run python -m grpc_tools.protoc -Iproto \
+		--python_out=aetcd/rpc/ \
+		--grpc_python_out=aetcd/rpc/ \
+		proto/rpc.proto proto/auth.proto proto/kv.proto
+	sed -i -e 's/import auth_pb2/from . import auth_pb2/g' aetcd/rpc/rpc_pb2.py
+	sed -i -e 's/import kv_pb2/from . import kv_pb2/g' aetcd/rpc/rpc_pb2.py
+	sed -i -e 's/import rpc_pb2/from . import rpc_pb2/g' aetcd/rpc/rpc_pb2_grpc.py
+
 genproto: bootstrap
-	$(PYTHON) -m grpc_tools.protoc -Iproto \
+	uv run python -m grpc_tools.protoc -Iproto \
 		--python_out=aetcd/rpc/ \
 		--grpc_python_out=aetcd/rpc/ \
 		proto/rpc.proto proto/auth.proto proto/kv.proto
